@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Clean Field App || Für ein sauberes Tempelhofer Feld</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    html, body, #map {height:100%; margin:0; padding:0; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;}
+    
+    
+    #titlePanel { 
+      position:absolute; 
+      top:20px; 
+      left:50%; 
+      transform:translateX(-50%); 
+      padding:16px 24px; 
+      background: rgba(0,0,0,0.3); 
+      border-radius: 20px; 
+      backdrop-filter: blur(12px); 
+      -webkit-backdrop-filter: blur(12px); 
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3); 
+      color: white; 
+      font-size:18px; 
+      font-weight:bold; 
+      z-index:1200; 
+      text-align:center; 
+    }
+    
+    /* Kontrollzentrum */
+    #controlPanel { 
+      position:absolute; 
+      left:10px; 
+      top:50%; 
+      transform:translateY(-50%); 
+      display:flex; 
+      flex-direction:column; 
+      align-items:center; 
+      gap:12px; 
+      padding:8px; 
+      border-radius:16px; 
+      background:rgba(0,0,0,0.2); 
+      backdrop-filter:blur(12px); 
+      -webkit-backdrop-filter: blur(12px); 
+      box-shadow:0 8px 32px rgba(0,0,0,0.2); 
+      z-index:1200; 
+      width:60px; 
+    }
+    
+    .controlIcon { 
+      width:40px; 
+      height:40px; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      cursor:pointer; 
+      color:white; 
+      font-size:24px; 
+      border-radius:50%; 
+      transition: background 0.3s, transform 0.2s; 
+    }
+    
+    .controlIcon:hover { 
+      background: rgba(255,255,255,0.2); 
+      transform:scale(1.1); 
+    }
+    
+    .controlIcon svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    /* Glassmorph Panels */
+    .glassPanel { 
+      background: rgba(0,0,0,0.25); 
+      border-radius:16px; 
+      padding:12px; 
+      backdrop-filter: blur(12px); 
+      -webkit-backdrop-filter: blur(12px); 
+      box-shadow:0 8px 32px rgba(0,0,0,0.3); 
+      color:white; 
+      font-size:13px; 
+      position:absolute; 
+      z-index:1100; 
+    }
+    
+    #infoPanel { 
+      top:80px; 
+      right:20px; 
+      width:220px;
+    }
+    
+    #tablePanel { 
+      bottom:20px; 
+      left:50%; 
+      transform:translateX(-50%); 
+      width:500px; 
+      max-height:250px; 
+      overflow-y:auto; 
+      -ms-overflow-style: none; 
+      scrollbar-width: none; 
+    }
+    
+    #tablePanel::-webkit-scrollbar { 
+      display: none; 
+    }
+    
+    #impressumPanel { 
+      bottom:20px; 
+      right:20px; 
+      width:300px; 
+      display:none; 
+      font-size:12px;
+    }
+    
+    /* Pulsierender Nutzer-Marker */
+    .pulse { 
+      width: 20px; 
+      height: 20px; 
+      border-radius: 50%; 
+      background: rgba(0,123,255,0.8); 
+      box-shadow: 0 0 10px 2px rgba(0,123,255,0.5); 
+      animation: pulse 1.2s infinite; 
+    }
+    
+    @keyframes pulse { 
+      0% { transform: scale(0.9); opacity: 0.7;}
+      50% { transform: scale(1.4); opacity: 0.3;}
+      100% { transform: scale(0.9); opacity: 0.7;}
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  
+  <!-- Titel -->
+  <div id="titlePanel">Clean Field App || Für ein sauberes Tempelhofer Feld</div>
+  
+  <!-- Kontrollzentrum -->
+  <div id="controlPanel">
+    <div class="controlIcon" id="tableIcon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M9 6l11 0" />
+        <path d="M9 12l11 0" />
+        <path d="M9 18l11 0" />
+        <path d="M5 6l0 .01" />
+        <path d="M5 12l0 .01" />
+        <path d="M5 18l0 .01" />
+      </svg>
+    </div>
+    <div class="controlIcon" id="impressumIcon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M12 9h.01" />
+        <path d="M11 12h1v4h1" />
+      </svg>
+    </div>
+  </div>
+  
+  <!-- Panels -->
+  <div id="infoPanel" class="glassPanel">
+    <div id="robotInfo">Müllroboter: -<br>Füllstand: -</div>
+    <div id="routeInfo" style="margin-top:6px;">Distanz: -<br>Dauer: -</div>
+    <button id="callRobotBtn" disabled style="margin-top:12px; padding:6px 10px; border:none; border-radius:8px; background:rgba(255,255,255,0.25); color:white; cursor:pointer;">
+      Müllroboter rufen
+    </button>
+  </div>
+  
+  <div id="tablePanel" class="glassPanel"></div>
+  
+  <div id="impressumPanel" class="glassPanel">
+    <h3>Impressum</h3>
+    <p>Clean Field App || Für ein sauberes Tempelhofer Feld<br>
+       Autor: Ioannis Svolos<br>
+       E-Mail: s57354@bht-berlin.de<br>
+       Beschreibung: Die WebApp dient zur Simulation eines autonomen Müllroboter-Systems auf dem Tempelhofer Feld.
+       Auf einer interaktiven Karte (Leaflet) werden alle Roboter als Marker angezeigt:
+       Grün (idle) → verfügbar
+       Rot (busy) → besetzt
+       Blau (myActive) → aktuell für den Nutzer unterwegs
+       Nutzer können auf die Karte klicken, um ihren Standort zu markieren und dort einen verfügbaren (grünen) Roboter anzufordern.
+       Der Server wählt automatisch den nächstgelegenen freien Roboter aus, berechnet über die GraphHopper API eine Route und simuliert die Bewegung des Roboters bis zum Nutzer.
+      </p>
+  </div>
+  
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
