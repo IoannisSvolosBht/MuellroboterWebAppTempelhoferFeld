@@ -49,7 +49,7 @@ https://github.com/user-attachments/assets/c263b52f-7540-4498-8866-c56465b0bde0
 
 
 # Standorte
-## a) Müllroboter
+### a) Müllroboter
 Auf der interaktiven Karte werden alle Roboter als Marker angezeigt:
 - Grün (idle) → verfügbar
 - Rot (busy) → besetzt
@@ -59,7 +59,7 @@ Auf der interaktiven Karte werden alle Roboter als Marker angezeigt:
 
 <img width="336" height="374" alt="Screenshot (15) - Kopie" src="https://github.com/user-attachments/assets/eac654fc-b065-4b8c-bcfd-7ef943dad7a7" />
 
-## b) Nutzer
+### b) Nutzer
 Da die automatische Geolokalisierung im Firefox-Browser ungenau sein kann, wird der Standort des Nutzers manuell mit einem Marker auf der Karte gesetzt:
 
 <img width="234" height="215" alt="Screenshot (22) - Kopie" src="https://github.com/user-attachments/assets/7b4c6f58-2f10-4c87-b8da-a6e8d0d5347b" />
