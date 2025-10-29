@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-const GRAPH_HOPPER_KEY = process.env.GRAPH_HOPPER_KEY || "c51f0e9b-cd4d-4724-82e0-4e54e84fbf23";
+const GRAPH_HOPPER_KEY = process.env.GRAPH_HOPPER_KEY || "hier-key-eingeben";
 
 const app = express();
 app.use(express.json());
@@ -192,5 +192,6 @@ io.on('connection', socket=>{
 
 // Busy Roboter Bewegung starten
 setTimeout(simulateBusyRobots, 2000);
+
 
 server.listen(3000,()=>console.log("Server läuft auf http://localhost:3000"));
